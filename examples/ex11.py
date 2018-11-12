@@ -19,8 +19,10 @@ create table contacts(
 
 insert into contacts (name, email, phone) values
     ('Vinod', 'vinod@vinod.co', '9731424784'),
-    ('Shyam', 'shyam@example.com', '9872278965'),
-    ('John', 'johndoe@example.com', '5559281122');
+    ('Shyam', 'shyam@example.com', '9872278965');
+    
+insert into contacts (name, email, phone, city) values
+    ('John', 'johndoe@example.com', '5559281122', 'Dallas');
 
 '''
 from pymysql import connect
@@ -37,7 +39,7 @@ def main():
     conn = connect(**props)
 
     cur = conn.cursor()
-    cur.execute('select * from contacts')
+    cur.execute('select * from contacts where city = %s', ('Bangalore',))
     data = cur.fetchall()
     if len(data) > 0:
         for rec in data:
