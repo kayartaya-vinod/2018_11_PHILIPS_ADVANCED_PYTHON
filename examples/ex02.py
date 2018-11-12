@@ -55,8 +55,14 @@ class Book(object):
             self.title += value
         return self
     # other operator functions:
+    # following functions should return the invoking object
     # __isub__, __imul__, __idiv__, __imod__ --> -=, *=, /=, %=
+    
+    # following functions should return the result of 
+    # resepctive operation
     # __add__, __sub__, __mul__, __div__, __mod__ --> + - * / %
+    
+    # following functions should return True/False
     # __gt__, __ge__, __lt__, __le__, __eq__, __ne__ --> > >= < <= == !=
 
 def main():
