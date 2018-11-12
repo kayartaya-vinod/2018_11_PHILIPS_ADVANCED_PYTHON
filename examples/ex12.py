@@ -38,6 +38,16 @@ class ContactsDao(object):
         cur.close()
         conn.close()
 
+    def __getContact(self, data):
+        return Contact(
+                id = data[0],
+                name = data[1],
+                city = data[2],
+                email = data[3],
+                phone = data[4],
+                picture = data[5]
+            )
+
     def addContact(self, contact):
         pass
     
@@ -57,14 +67,7 @@ class ContactsDao(object):
             data = cur.fetchone()
             if data==None: return None
             
-            return Contact(
-                id = data[0],
-                name = data[1],
-                city = data[2],
-                email = data[3],
-                phone = data[4],
-                picture = data[5]
-            )
+            return self.__getContact(data)
         finally:
             self.__cleanup(conn, cur)
         
@@ -76,7 +79,20 @@ class ContactsDao(object):
         pass
 
     def getAllContacts(self):
-        pass
+        '''
+        should return a tuple of contact instances for all records
+        '''
+        conn, cur = self.__getCursor()
+        try:
+            cur.execute('select * from contacts')
+            data = cur.fetchall()
+            
+            lst = []
+            for d in data: lst.append(self.__getContact(d))
+            
+            return lst
+        finally:
+            self.__cleanup(conn, cur)
 
     def getContactsByCity(self, city):
         pass
@@ -86,7 +102,12 @@ def main():
     c1 = dao.getContact(1)
     c2 = dao.getContact(10)
 
-    print('c1:', c1)
-    print('c2:', c2)
+    # print('c1:', c1)
+    # print('c2:', c2)
+
+    contacts = dao.getAllContacts()
+
+    for c in contacts:
+        print(c)
     
 if __name__=='__main__': main()
