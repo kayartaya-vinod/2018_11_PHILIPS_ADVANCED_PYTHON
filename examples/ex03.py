@@ -5,6 +5,7 @@ Working with inheritance in Python
 '''
 
 class Person(object):
+
     def __init__(self, **kwargs):
         self._name = kwargs.get('name')
         self._email = kwargs.get('email')
@@ -35,6 +36,8 @@ class Employee(Person, Resource):
 def main():
     e1 = Employee(name='James', email='james@example.com', id=123, location='Bangalore')
     # print(dir(e1))
+    
     print(e1)
+
 
 if __name__=='__main__': main()
