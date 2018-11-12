@@ -44,6 +44,21 @@ class Book(object):
 
         self.__price = value
 
+    # __iadd__ correspond to the += operator
+    # LHS of the operator is the invoking object
+    # RHS is the value
+    # also, this function must return the invoking object
+    def __iadd__(self, value):
+        if type(value) in (int, float):
+            self.price += value
+        elif type(value) == str:
+            self.title += value
+        return self
+    # other operator functions:
+    # __isub__, __imul__, __idiv__, __imod__ --> -=, *=, /=, %=
+    # __add__, __sub__, __mul__, __div__, __mod__ --> + - * / %
+    # __gt__, __ge__, __lt__, __le__, __eq__, __ne__ --> > >= < <= == !=
+
 def main():
     b1 = Book(title='Let us C', author='Y Kanitkar', price=299)
     print(b1)
@@ -56,6 +71,11 @@ def main():
     b1.title = 'Let us Python'
     b1.price = 123
     b1.author = 'Vinod K'
+
+    print(b1)
+
+    b1 += ' - 2nd edition'      # b1.title to be appended
+    b1 += -15                    # b1.price to be added
 
     print(b1)
 
