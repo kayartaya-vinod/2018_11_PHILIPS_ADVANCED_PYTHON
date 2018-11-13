@@ -7,6 +7,8 @@ Defines an entity class Contact and a
 Repository calss ContactDao
 '''
 
+import json
+
 class Contact(object):
     def __init__(self, **kwargs):
         self.id = kwargs.get('id')
@@ -15,36 +17,6 @@ class Contact(object):
         self.phone = kwargs.get('phone')
         self.city = kwargs.get('city', 'Bangalore')
         self.picture = kwargs.get('picture')
-
-    # @property
-    # def id(self): return self.__id
-    # @id.setter
-    # def id(self, value): self.__id = value
-
-    # @property
-    # def name(self): return self.__name
-    # @name.setter
-    # def name(self, value): self.__name = value
-
-    # @property
-    # def city(self): return self.__city
-    # @city.setter
-    # def city(self, value): self.__city = value
-
-    # @property
-    # def email(self): return self.__email
-    # @email.setter
-    # def email(self, value): self.__email = value
-
-    # @property
-    # def phone(self): return self.__phone
-    # @phone.setter
-    # def phone(self, value): self.__phone = value
-
-    # @property
-    # def picture(self): return self.__picture
-    # @picture.setter
-    # def picture(self, value): self.__picture = value
 
     def __str__(self):
         return 'Contact [Id={}, Name={}, Email={}, Phone={}, City={}, Picture={}]'.format(
@@ -55,6 +27,15 @@ class Contact(object):
             self.city,
             self.picture
         )
+
+    @property
+    def as_json(self):
+        return json.dumps(self.__dict__)
+
+    @as_json.setter
+    def as_json(self, value):
+        self.__dict__ = json.loads(value)
+
 
 class DaoException(Exception):
     def __init__(self, *args):
