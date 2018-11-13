@@ -9,21 +9,51 @@ Repository calss ContactDao
 
 class Contact(object):
     def __init__(self, **kwargs):
-        self.__id = kwargs.get('id')
-        self.__name = kwargs.get('name')
-        self.__email = kwargs.get('email')
-        self.__phone = kwargs.get('phone')
-        self.__city = kwargs.get('city', 'Bangalore')
-        self.__picture = kwargs.get('picture')
+        self.id = kwargs.get('id')
+        self.name = kwargs.get('name')
+        self.email = kwargs.get('email')
+        self.phone = kwargs.get('phone')
+        self.city = kwargs.get('city', 'Bangalore')
+        self.picture = kwargs.get('picture')
+
+    @property
+    def id(self): return self.__id
+    @id.setter
+    def id(self, value): self.__id = value
+
+    @property
+    def name(self): return self.__name
+    @name.setter
+    def name(self, value): self.__name = value
+
+    @property
+    def city(self): return self.__city
+    @city.setter
+    def city(self, value): self.__city = value
+
+    @property
+    def email(self): return self.__email
+    @email.setter
+    def email(self, value): self.__email = value
+
+    @property
+    def phone(self): return self.__phone
+    @phone.setter
+    def phone(self, value): self.__phone = value
+
+    @property
+    def picture(self): return self.__picture
+    @picture.setter
+    def picture(self, value): self.__picture = value
 
     def __str__(self):
         return 'Contact [Id={}, Name={}, Email={}, Phone={}, City={}, Picture={}]'.format(
-            self.__id,
-            self.__name,
-            self.__email,
-            self.__phone,
-            self.__city,
-            self.__picture
+            self.id,
+            self.name,
+            self.email,
+            self.phone,
+            self.city,
+            self.picture
         )
 
 class ContactsDao(object):
@@ -49,7 +79,15 @@ class ContactsDao(object):
             )
 
     def addContact(self, contact):
-        pass
+        conn, cur = self.__getCursor()
+        try:
+            sql = 'insert into contacts(name, city, email, phone, picture) values(?,?,?,?,?)'
+            cur.execute(sql, (contact.name, contact.city, contact.email, contact.phone, contact.picture))
+            contact.id = cur.lastrowid
+            conn.commit()
+            return contact
+        finally:
+            self.__cleanup(conn, cur)
     
     def getContact(self, id=None):
         '''
@@ -73,10 +111,27 @@ class ContactsDao(object):
         
     
     def updateContact(self, contact):
-        pass
+        conn, cur = self.__getCursor()
+        try:
+            sql = 'update contacts set name=?, city=?, email=?, phone=?, picture=? where id=?'
+            cur.execute(sql, (contact.name, contact.city, contact.email, contact.phone, contact.picture, contact.id))
+            conn.commit()
+            return contact
+        finally:
+            self.__cleanup(conn, cur)
+    
 
     def deleteContact(self, id):
-        pass
+        if id==None or type(id) != int:
+            raise ValueError('id is required and must be int')
+
+        conn, cur = self.__getCursor()
+        try:
+            cur.execute('delete from contacts where id = ?', (id,))
+            conn.commit()
+            
+        finally:
+            self.__cleanup(conn, cur)
 
     def getAllContacts(self):
         '''
@@ -95,7 +150,17 @@ class ContactsDao(object):
             self.__cleanup(conn, cur)
 
     def getContactsByCity(self, city):
-        pass
+        conn, cur = self.__getCursor()
+        try:
+            cur.execute('select * from contacts where city=?', (city,))
+            data = cur.fetchall()
+            
+            lst = []
+            for d in data: lst.append(self.__getContact(d))
+            
+            return lst
+        finally:
+            self.__cleanup(conn, cur)
 
 def main():
     dao = ContactsDao()
@@ -109,5 +174,9 @@ def main():
 
     for c in contacts:
         print(c)
+
+    # c3 = Contact(name='Vikram', email='vikram@xmple.com', city='Bangalore', phone='938373733')
+    # dao.addContact(c3)
+    # print('After adding, c3 is: ', c3)
     
 if __name__=='__main__': main()
