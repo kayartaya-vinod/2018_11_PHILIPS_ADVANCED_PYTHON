@@ -10,6 +10,7 @@ import json
 
 app = Flask(__name__)
 
+
 @app.route('/')
 def info():
     return 'This is a Flask REST endpoint'
