@@ -56,6 +56,10 @@ class Contact(object):
             self.picture
         )
 
+class DaoException(Exception):
+    def __init__(self, *args):
+        super().__init__(*args)
+
 class ContactsDao(object):
 
     def __getCursor(self):
@@ -79,6 +83,9 @@ class ContactsDao(object):
             )
 
     def addContact(self, contact):
+        if type(contact)!=Contact: 
+            raise TypeError('Only Contact instance is allowed')
+
         conn, cur = self.__getCursor()
         try:
             sql = 'insert into contacts(name, city, email, phone, picture) values(?,?,?,?,?)'
@@ -86,6 +93,8 @@ class ContactsDao(object):
             contact.id = cur.lastrowid
             conn.commit()
             return contact
+        except Exception as e:
+            raise DaoException('There was an error: {}'.format(e))
         finally:
             self.__cleanup(conn, cur)
     
@@ -106,6 +115,8 @@ class ContactsDao(object):
             if data==None: return None
             
             return self.__getContact(data)
+        except Exception as e:
+            raise DaoException('There was an error: {}'.format(e))
         finally:
             self.__cleanup(conn, cur)
         
@@ -117,6 +128,8 @@ class ContactsDao(object):
             cur.execute(sql, (contact.name, contact.city, contact.email, contact.phone, contact.picture, contact.id))
             conn.commit()
             return contact
+        except Exception as e:
+            raise DaoException('There was an error: {}'.format(e))
         finally:
             self.__cleanup(conn, cur)
     
@@ -130,6 +143,8 @@ class ContactsDao(object):
             cur.execute('delete from contacts where id = ?', (id,))
             conn.commit()
             
+        except Exception as e:
+            raise DaoException('There was an error: {}'.format(e))
         finally:
             self.__cleanup(conn, cur)
 
@@ -146,6 +161,8 @@ class ContactsDao(object):
             for d in data: lst.append(self.__getContact(d))
             
             return lst
+        except Exception as e:
+            raise DaoException('There was an error: {}'.format(e))
         finally:
             self.__cleanup(conn, cur)
 
@@ -175,8 +192,8 @@ def main():
     for c in contacts:
         print(c)
 
-    # c3 = Contact(name='Vikram', email='vikram@xmple.com', city='Bangalore', phone='938373733')
-    # dao.addContact(c3)
+    # c3 = Contact(name='Rajesh', email='rajesh@xmple.com', city='Bangalore', phone='938373234')
+    # c3 = dao.addContact(c3)
     # print('After adding, c3 is: ', c3)
     
 if __name__=='__main__': main()
