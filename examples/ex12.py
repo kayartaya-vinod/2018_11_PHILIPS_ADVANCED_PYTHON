@@ -16,35 +16,35 @@ class Contact(object):
         self.city = kwargs.get('city', 'Bangalore')
         self.picture = kwargs.get('picture')
 
-    @property
-    def id(self): return self.__id
-    @id.setter
-    def id(self, value): self.__id = value
+    # @property
+    # def id(self): return self.__id
+    # @id.setter
+    # def id(self, value): self.__id = value
 
-    @property
-    def name(self): return self.__name
-    @name.setter
-    def name(self, value): self.__name = value
+    # @property
+    # def name(self): return self.__name
+    # @name.setter
+    # def name(self, value): self.__name = value
 
-    @property
-    def city(self): return self.__city
-    @city.setter
-    def city(self, value): self.__city = value
+    # @property
+    # def city(self): return self.__city
+    # @city.setter
+    # def city(self, value): self.__city = value
 
-    @property
-    def email(self): return self.__email
-    @email.setter
-    def email(self, value): self.__email = value
+    # @property
+    # def email(self): return self.__email
+    # @email.setter
+    # def email(self, value): self.__email = value
 
-    @property
-    def phone(self): return self.__phone
-    @phone.setter
-    def phone(self, value): self.__phone = value
+    # @property
+    # def phone(self): return self.__phone
+    # @phone.setter
+    # def phone(self, value): self.__phone = value
 
-    @property
-    def picture(self): return self.__picture
-    @picture.setter
-    def picture(self, value): self.__picture = value
+    # @property
+    # def picture(self): return self.__picture
+    # @picture.setter
+    # def picture(self, value): self.__picture = value
 
     def __str__(self):
         return 'Contact [Id={}, Name={}, Email={}, Phone={}, City={}, Picture={}]'.format(
