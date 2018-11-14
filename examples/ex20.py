@@ -14,8 +14,9 @@ def main():
     req += 'Content-Type: application/json\n'
     req += 'Connection: close\n\n\n'
     req += json.dumps(p)
-    
+
     print(req)
+    
 
     client = socket.socket()
     client.connect(('localhost', 5000))
