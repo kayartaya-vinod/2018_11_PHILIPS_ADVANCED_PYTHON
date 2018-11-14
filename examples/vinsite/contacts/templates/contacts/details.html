@@ -1,0 +1,31 @@
+{% extends 'contacts/layout.html' %}
+
+{% block content %}
+
+<div class="row">
+    <div class="col-sm-2"></div>
+    <div class="col-sm-8">
+        <img src="{{ contact.picture }}" alt="" class="img-responsive">
+        <table class="table table-bordered table-hover">
+            <tr>
+                <td>Name</td>
+                <td>{{ contact.name }}</td>
+            </tr>
+            <tr>
+                <td>City</td>
+                <td>{{ contact.city }}</td>
+            </tr>
+            <tr>
+                <td>Email address</td>
+                <td>{{ contact.email }}</td>
+            </tr>
+            <tr>
+                <td>Phone number</td>
+                <td>{{ contact.phone }}</td>
+            </tr>
+        </table>
+    </div>
+    <div class="col-sm-2"></div>
+</div>
+
+{% endblock %}
