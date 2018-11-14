@@ -4,6 +4,9 @@
 * <a href="#creating_a_project">Creating a project</a>
 * <a href="#creating_an_app">Creating an app</a>
 * <a href="#write_your_first_view">Write your first view</a>
+* <a href="#database_setup">Database setup</a>
+* <a href="#creating_models">Creating models</a>
+* <a href="#activating_models">Activating models</a>
 
 <div id="install_django">
 
@@ -252,4 +255,118 @@ Arbitrary keyword arguments can be passed in a dictionary to the target view.
 Naming your URL lets you refer to it unambiguously from elsewhere in Django, especially from within templates. This powerful feature allows you to make global changes to the URL patterns of your project while only touching a single file.
 
 
+</div>
+
+<div id="database_setup">
+
+### Database setup
+
+The file `mysite/mysite/settings.py` contains module-level variables representing Django settings.
+
+
+By default, the configuration uses SQLite, which is included in Python, so you won’t need to install anything else to support your database. When starting your first real project, however, you may want to use a more scalable database like PostgreSQL, or MySQL.
+
+The **INSTALLED_APPS** setting at the top of the file holds the names of all Django applications that are activated in this Django instance.
+
+By default, **INSTALLED_APPS** contains the following apps, all of which come with Django:
+
+* **django.contrib.admin** – The admin site. You’ll use it shortly.
+* **django.contrib.auth** – An authentication system.
+* **django.contrib.contenttypes** – A framework for content types.
+* **django.contrib.sessions** – A session framework.
+* **django.contrib.messages** – A messaging framework.
+* **django.contrib.staticfiles** – A framework for managing static files.
+
+These applications are included by default as a convenience for the common case.
+
+
+Some of these applications make use of at least one database table, so we need to create the tables in the database before we can use them. To do that, run the following command:
+
+```unix
+python manage.py migrate
+```
+
+The migrate command looks at the INSTALLED_APPS setting and creates any necessary database tables according to the database settings in your mysite/settings.py file. You’ll see a message for each migration it applies. 
+</div>
+
+<div id="creating_models">
+
+### Creating models
+
+A model is a class representing your application's data. It contains the essential fields and behaviors of the data you’re storing. 
+
+Here is the model required for our `contacts` app:
+
+```python
+from django.db import models
+
+class Contact(models.Model):
+    name = models.CharField(max_length=50)
+    email = models.CharField(max_length=150, unique=True)
+    phone = models.CharField(max_length=50, unique=True)
+    city = models.CharField(max_length=50, default='Bangalore')
+    picture = models.CharField(max_length=250)
+
+
+```
+
+Each model is represented by a class that subclasses django.db.models.Model. Each model has a number of class variables, each of which represents a database field in the model.
+
+
+Each field is represented by an instance of a Field class – e.g., CharField for character fields and DateTimeField for datetimes. This tells Django what type of data each field holds.
+</div>
+
+
+<div id="activating_models"
+
+### Activating models
+
+To include our `contacts` app in the project, we need to add a reference to its configuration class in the INSTALLED_APPS setting. The **ContactsConfig** class is in the `contacts/apps.py` file, so its dotted path is 'contacts.apps.ContactsConfig'. Edit the mysite/settings.py file and add this dotted path to the INSTALLED_APPS setting. 
+
+Here is the edited version of INSTALLED_APPS variable in the settings.py file:
+
+```python
+INSTALLED_APPS = [
+    'contacts.apps.ContactsConfig',
+    'django.contrib.admin',
+    'django.contrib.auth',
+    'django.contrib.contenttypes',
+    'django.contrib.sessions',
+    'django.contrib.messages',
+    'django.contrib.staticfiles',
+]
+```
+
+Once done, run the following command:
+
+```unix
+python manage.py makemigrations contacts
+```
+
+You should see something like this on the screen:
+
+```unix
+Migrations for 'contacts':
+  contacts/migrations/0001_initial.py
+    - Create model Contact
+```
+
+By running makemigrations, you’re telling Django that you’ve made some changes to your models or created new models and that you’d like these changes to be stored as a migration.
+
+These migrations are just python files on the disk and to execute the SQL migrations, run the following command:
+
+```unix
+python manage.py sqlmigrate contacts 0001
+```
+
+The output should be somethig like this:
+
+```unix
+BEGIN;
+--
+-- Create model Contact
+--
+CREATE TABLE "contacts_contact" ("id" integer NOT NULL PRIMARY KEY AUTOINCREMENT, "name" varchar(50) NOT NULL, "email" varchar(150) NOT NULL UNIQUE, "phone" varchar(50) NOT NULL UNIQUE, "city" varchar(50) NOT NULL, "picture" varchar(250) NOT NULL);
+COMMIT;
+```
 </div>
